@@ -1,0 +1,84 @@
+@mixin hw() {
+    height: 100%;
+    width: 100%;
+}
+
+@mixin flex-center() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: helvetica;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+main {
+    @include hw();
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .left {
+        @include hw();
+        background-color: rgba(0, 0, 255, 0.567);
+        border: 1px solid black;
+        display: grid;
+        grid-template-rows: .1fr .6fr .05fr .25fr;
+
+        >div {
+            background-color: red;
+            // @include hw();
+            border: 1px solid black;
+        }
+
+        .nav {
+            @include hw();
+            @include flex-center();
+
+            >div {
+                background-color: #fff;
+                @include hw();
+                border: 1px solid black;
+                @include flex-center();
+            }
+        }
+
+        .bottom {
+            @include hw();
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            .bleft {
+                background-color: #f278ea;
+                border: 1fx solid black;
+            }
+
+            .bright {
+                background-color: #caff56;
+                border: 1px solid black
+            }
+        }
+    }
+
+    .right {
+        @include hw();
+        background-color: rgba(144, 238, 144, 0.611);
+        border: 1px solid black;
+        display: grid;
+        grid-template-columns:1fr 1fr 1fr 1fr;   
+        grid-template-rows: 2.5fr 2.5fr 2.5 fr 2.5fr 2.5fr;
+        >div {
+            border: 1px solid black;
+
+        }
+    }
+}

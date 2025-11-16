@@ -1,0 +1,214 @@
+   * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: helvetica;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .dashboard {
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+        }
+
+        .sidebar {
+            background-color: rgb(22, 22, 22);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 15px;
+            transition: .3s ease;
+        }
+
+        .profile {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .icons {
+            display: flex;
+            flex-direction: column;
+            color: white;
+            gap: 40px;
+            justify-content: center;
+            margin-top: 40px;
+            font-size: 20px;
+            align-items: center;  
+        }
+
+        .logout {
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .logout button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #464646;
+            border: none;
+            border-radius: 40%;
+            height: 40px;
+            width: 40px;
+            color: white;
+            cursor: pointer;
+            transition: .3s ease;
+        }
+
+        .logout button:hover {
+            background-color: red;
+        }
+        .main{
+            padding: 10px;
+     
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            color: white;
+        }
+
+        .search {
+            margin-left: 15px;
+        }
+
+        .date {
+            margin-left: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 30px;
+            border-radius: 15px;
+            background: #1e1e2f;
+            width: 220px;
+        }
+
+        .search i {
+            color: #888;
+            font-size: 18px;
+        }
+
+        .search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .right-icons {
+            margin-left: auto;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .ic button {
+            background-color: #2a2a2a8e;
+            border: none;
+            border-radius: 40%;
+            height: 50px;
+            width: 50px;
+            color: white;
+            cursor: pointer;
+        }
+        .ic button i{
+            font-size: 20px;
+        }
+        header{
+            color: white;
+        }
+        .center{
+            display: grid;
+            height: 50%;
+            width: 100%;
+            padding:10px 20px;
+            gap: 10px;
+            grid-template-columns: .5fr .5fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-template-areas: "total_rev total_ord revenue"
+                                "total_visi net_profit revenue";
+        }
+        .center div{
+            background-color: rgb(29, 29, 29);
+        }
+       
+        .total_rev {
+            grid-area: total_rev;
+            background-color: red;
+            border-radius: 20px 20px 0 20px;
+        }
+        .total_ord{
+            grid-area: total_ord;
+            border-radius: 20px 20px 20px 0;
+        }
+        .total_visi{
+            grid-area: total_visi;
+            border-radius: 20px  0  20px 20px;
+        }
+        .net_profit{
+            grid-area: net_profit;
+            border-radius: 0 20px 20px  20px;
+        }
+        .revenue{
+            grid-area: revenue;
+            border-radius: 20px 20px  20px 0;
+        }
+
+        .bottom{
+            display: grid;
+            height: 240px;
+            width: 100%;
+            padding:8px 20px;
+            gap: 15px;
+            grid-template-columns: .6fr .6fr 1fr;
+            grid-template-rows: 1fr;
+            grid-template-areas: "orders customers sales";
+            
+        }
+        .bottom div{
+             background-color: rgb(29, 29, 29);
+        }
+        .orders{
+            grid-area: orders;
+            background-color: black;
+            border-radius: 20px 0 0 20px;
+        }
+        .customers{
+            grid-area: customers;
+            background-color: black;
+             border-radius: 0 20px  20px 0;
+        }
+        .sales{
+            grid-area: sales;
+            background-color: black;
+             border-radius:0 20px 20px 20px;
+        }

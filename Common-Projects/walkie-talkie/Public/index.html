@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Walkie-Talkie</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>WALKIE-TALKIE</h1>
+    <button onclick="startCall()">Start Call</button>
+    <button onclick="joinCall()">Join Call</button>
+    <div id="peerList"></div>
+    <h2 id="status">Not Connected</h2>
+    <button id="toggleAudio" onclick="toggleAudio()" style="display:none;">Mute</button>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

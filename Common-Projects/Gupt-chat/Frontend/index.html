@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guptchat.gg</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        /* General page ke liye CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #121212;
+            font-family: "Roboto", sans-serif;
+            position: relative;
+            color: #fff;
+            /* Body ka background gradient */
+            background: #0d0d0d;
+            background: linear-gradient(135deg, #0d0d0d 0%, #111827 50%, #1e1e2f 100%);
+        }
+
+        /* Navbar ka style */
+        nav {
+            width: 100%;
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        nav h1 {
+            font-size: 24px;
+        }
+        nav h1 span {
+            color: #21afe7; /* Blue color */
+        }
+
+        /* Intro screen ka style (start button ke saath) */
+        .intro {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .intro p {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .intro p span {
+            color: #21afe7; /* Blue color */
+        }
+
+        /* Start button ka style */
+        #start-btn {
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #6a5af9, #21afe7);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(33, 175, 231, 0.4), 0 3px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        /* Button par hover karne par shine effect */
+        #start-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+        }
+        #start-btn:hover::after {
+            left: 200%;
+        }
+        #start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(33, 175, 231, 0.5), 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        #start-btn:active {
+            transform: translateY(1px) scale(0.97);
+            box-shadow: 0 4px 10px rgba(33, 175, 231, 0.4), 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Chat container ka style */
+        .chat-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* By default hidden */
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Chat box ka style */
+        .chat-box {
+            background-color: #1e1e1e;
+            width: 500px;
+            max-width: 95%;
+            height: 500px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Chat header ka style */
+        .chat-header {
+            background: linear-gradient(135deg, #6a5af9, #21afe7);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Chat body (messages area) ka style */
+        .chat-body {
+            padding: 15px;
+            flex: 1;
+            overflow-y: auto;
+            background-color: #121212;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Messages ka general style */
+        .chat-body p {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 12px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        /* User ke messages ka style (right side) */
+        .user {
+            background-color: #21afe7;
+            color: #fff;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        /* Partner ke messages ka style (left side) */
+        .partner {
+            background-color: #333;
+            color: #fff;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        /* Typing indicator ka style */
+        #typing-indicator {
+            font-style: italic;
+            font-size: 14px;
+            color: #aaa;
+            margin: 4px 0;
+            align-self: flex-start;
+        }
+
+        /* Chat input area ka style */
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #333;
+            align-items: center;
+            padding: 5px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            outline: none;
+            background-color: #1e1e1e;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 20px;
+            padding-left: 20px;
+        }
+        .chat-input button {
+            padding: 12px 20px;
+            background-color: #21afe7;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+
+        /* File input button ka style */
+        .chat-input label {
+            background-color: transparent;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .chat-input label i {
+            font-size: 20px;
+        }
+        #file-input {
+            display: none; /* Default file input ko hide karna */
+        }
+        
+        /* File messages ka style */
+        .file-message {
+            padding: 10px;
+            border-radius: 12px;
+            max-width: 70%;
+            word-wrap: break-word;
+            background-color: #333;
+            color: #fff;
+            align-self: flex-start;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+        .file-message.user {
+            background-color: #21afe7;
+            color: #fff;
+            align-self: flex-end;
+        }
+        .file-message a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-message a:hover {
+            text-decoration: underline;
+        }
+
+        .file-message .download-icon {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+
+        .file-message .file-icon {
+            font-size: 24px;
+        }
+        .file-message .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-message .file-info div {
+            display: flex;
+            flex-direction: column;
+        }
+        .file-message .file-info .file-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .file-message .file-info .file-size {
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        /* File upload/download ke liye progress bar */
+        .file-message .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #2e2e2e;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .file-message .progress-fill {
+            height: 100%;
+            background-color: #21afe7;
+            transition: width 0.3s;
+        }
+
+        /* Chat mein images aur videos ka style */
+        .file-message img, .file-message video {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Waiting message ka style */
+        #waiting-msg {
+            color: #ccc;
+            font-style: italic;
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+            transition: opacity 0.1s;
+        }
+
+        /* Jab partner milta hai toh message fade out ho jata hai */
+        #waiting-msg.hide {
+            opacity: 0;
+        }
+
+        /* Navbar mein marquee effect */
+        nav {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 60px;
+            background-color: #1e1e1e;
+            padding: 0 20px;
+        }
+        nav .logo {
+            font-size: 24px;
+            color: #fff;
+            flex: 0 0 auto;
+        }
+        nav .logo span {
+            color: #21afe7;
+        }
+        .marquee-wrapper {
+            flex: 1;
+            overflow: hidden;
+            margin: 0 0 0 315px;
+            max-width: 600px;
+        }
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            color: #fff;
+            font-size: 16px;
+            animation: marquee 20s linear infinite; /* Marquee animation apply kar raha hai */
+        }
+        /* Marquee animation ka keyframe */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h1 class="logo">Guptchat.<span>gg</span></h1>
+        <div class="marquee-wrapper">
+            <div class="marquee-text">
+                Welcome to Guptchat! This is an anonymous chatting app where you can chat to strangers & Share Files.
+            </div>
+        </div>
+    </nav>
+
+    <div class="intro" id="intro">
+        <p>Talk to strangers,<br /><span>Make friends!</span></p>
+        <button id="start-btn">Start Chat</button>
+        <p id="waiting-msg"></p>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <div class="chat-box">
+            <div class="chat-header">
+                <h2>Chat</h2>
+                <div class="chat-controls">
+                    <span class="close-btn" id="close-chat">&times;</span>
+                </div>
+            </div>
+            <div class="chat-body" id="chat-body">
+                <p><em>Start your conversation...</em></p>
+                <p id="typing-indicator" style="font-style: italic; font-size: 14px; color: #aaa; margin: 2px 0;"></p>
+            </div>
+
+            <div class="chat-input">
+                <label for="file-input"><i class="fas fa-paperclip"></i></label>
+                <input type="file" id="file-input">
+                <input type="text" id="chat-input-field" placeholder="Type a message..." />
+                <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        // Socket.IO script dynamically load kar rahe hain
+        const socketScript = document.createElement("script");
+        socketScript.src = "https://cdn.socket.io/4.7.2/socket.io.min.js";
+        socketScript.onload = initChat; // Load hone par initChat function chalega
+        document.head.appendChild(socketScript);
+
+        function initChat() {
+            // HTML elements ko JavaScript variables mein store kar rahe hain
+            const startBtn = document.getElementById("start-btn");
+            const intro = document.getElementById("intro");
+            const chatContainer = document.getElementById("chat-container");
+            const sendBtn = document.getElementById("send-btn");
+            const chatInput = document.getElementById("chat-input-field");
+            const chatBody = document.getElementById("chat-body");
+            const closeBtn = document.getElementById("close-chat");
+            const typingIndicator = document.getElementById("typing-indicator");
+            const waitingMsg = document.getElementById("waiting-msg");
+            const fileInput = document.getElementById("file-input");
+
+            // Socket.IO client ka instance create kar rahe hain
+            const socket = io();
+            let receivedFiles = {}; // Incoming files ko store karne ke liye object
+
+            // Simple text message ko chat mein add karne ka helper function
+            function appendMessage(text, sender = "user") {
+                const p = document.createElement("p");
+                p.textContent = text;
+                p.classList.add(sender);
+                chatBody.insertBefore(p, typingIndicator);
+                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom
+            }
+
+            // File message ko chat mein add karne ke liye function
+            function appendFileMessage(data, sender = "user") {
+                const p = document.createElement("p");
+                p.classList.add("file-message", sender);
+
+                const fileInfo = document.createElement("div");
+                fileInfo.classList.add("file-info");
+
+                const icon = document.createElement("i");
+                const fileType = data.fileType || "";
+                // File type ke hisab se icon set kar rahe hain
+                if (fileType.startsWith("image/")) {
+                    icon.classList.add("fas", "fa-image");
+                } else if (fileType.startsWith("video/")) {
+                    icon.classList.add("fas", "fa-video");
+                } else if (fileType.includes("pdf")) {
+                    icon.classList.add("fas", "fa-file-pdf");
+                } else if (fileType.includes("audio")) {
+                    icon.classList.add("fas", "fa-file-audio");
+                } else {
+                    icon.classList.add("fas", "fa-file");
+                }
+                fileInfo.appendChild(icon);
+
+                const textContent = document.createElement("div");
+                const fileNameSpan = document.createElement("span");
+                fileNameSpan.classList.add("file-name");
+                fileNameSpan.textContent = data.fileName;
+                textContent.appendChild(fileNameSpan);
+
+                const fileSizeSpan = document.createElement("span");
+                fileSizeSpan.classList.add("file-size");
+                fileSizeSpan.textContent = `(${(data.fileSize / (1024 * 1024)).toFixed(2)} MB)`;
+                textContent.appendChild(fileSizeSpan);
+
+                fileInfo.appendChild(textContent);
+                p.appendChild(fileInfo);
+
+                // Progress bar add karna
+                const progressBar = document.createElement("div");
+                progressBar.classList.add("progress-bar");
+                const progressFill = document.createElement("div");
+                progressFill.classList.add("progress-fill");
+                progressFill.style.width = "0%";
+                progressBar.appendChild(progressFill);
+                p.appendChild(progressBar);
+
+                // Agar partner ne file bheji hai toh download link add karega
+                if (sender === 'partner') {
+                    p.id = `file-${data.fileId}`;
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = "#";
+                    downloadLink.download = data.fileName;
+                    downloadLink.textContent = "Download";
+                    downloadLink.classList.add("download-link");
+                    p.appendChild(downloadLink);
+
+                    // Download link par click karne par file download karega
+                    downloadLink.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        if (receivedFiles[data.fileId]) {
+                            const blob = new Blob(receivedFiles[data.fileId].chunks, { type: receivedFiles[data.fileId].fileType });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = receivedFiles[data.fileId].fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }
+                    });
+                }
+
+                chatBody.insertBefore(p, typingIndicator);
+                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom
+
+                return { progressFill, p };
+            }
+
+            // Progress bar ko update karne ka function
+            function updateProgress(fileId, progress) {
+                const p = document.getElementById(`file-${fileId}`);
+                if (p) {
+                    const progressFill = p.querySelector('.progress-fill');
+                    if (progressFill) {
+                        progressFill.style.width = `${progress}%`;
+                    }
+                }
+            }
+
+            // File ko chunks mein tod kar server ko bhejega
+            function sendFile(file) {
+                const reader = new FileReader();
+                const chunkSize = 1024 * 64; // 64 KB ke chunks
+                let offset = 0;
+                // File ke liye unique ID generate kar rahe hain
+                const fileId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+                // Message ko chat mein add karna
+                const { progressFill, p } = appendFileMessage({ fileName: file.name, fileSize: file.size, fileType: file.type, fileId: fileId }, "user");
+
+                // File transfer start hone ka event emit kar rahe hain
+                socket.emit("file-start", {
+                    roomId: window.roomId,
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileType: file.type,
+                    fileId: fileId
+                });
+
+                // Chunk ko read karne ka event handler
+                reader.onload = function(event) {
+                    // Chunk ko server par bhej rahe hain
+                    socket.emit("file-chunk", {
+                        roomId: window.roomId,
+                        chunk: event.target.result,
+                        fileId: fileId
+                    });
+                    offset += event.target.result.byteLength;
+                    // Progress calculate aur update karna
+                    const progress = Math.min(100, (offset / file.size) * 100);
+                    progressFill.style.width = `${progress}%`;
+
+                    if (offset < file.size) {
+                        readNextChunk(); // Agla chunk read karna
+                    } else {
+                        socket.emit("file-end", { roomId: window.roomId, fileId: fileId }); // File transfer end event
+                        setTimeout(() => {
+                           if (p.querySelector('.progress-bar')) {
+                               p.querySelector('.progress-bar').style.display = 'none'; // Progress bar hide kar dena
+                           }
+                        }, 500);
+                    }
+                };
+
+                // Pehla chunk read karna
+                function readNextChunk() {
+                    const chunk = file.slice(offset, offset + chunkSize);
+                    reader.readAsArrayBuffer(chunk);
+                }
+                readNextChunk();
+            }
+
+            // Start button par click event
+            startBtn.addEventListener("click", () => {
+                socket.emit("joinPool"); // Server se partner dhundhne ke liye request
+                waitingMsg.textContent = "Waiting for a partner...";
+            });
+
+            // Jab partner milta hai tab ye event trigger hota hai
+            socket.on("matched", (roomId) => {
+                window.roomId = roomId; // Room ID store karna
+                intro.style.display = "none";
+                chatContainer.style.display = "flex";
+                chatBody.innerHTML = "";
+                chatBody.appendChild(typingIndicator);
+                appendMessage("Partner connected! Start chatting...", "partner");
+            });
+
+            // Send button par click event
+            sendBtn.addEventListener("click", () => {
+                const message = chatInput.value.trim();
+                if (message !== "") {
+                    appendMessage(message, "user");
+                    socket.emit("sendMessage", { roomId: window.roomId, message: message }); // Message server ko bhejna
+                    chatInput.value = "";
+                    socket.emit("typing", { roomId: window.roomId, typing: false });
+                }
+            });
+
+            // File input par change event
+            fileInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    sendFile(file); // File bhejane ka process start karna
+                }
+            });
+
+            // Partner se message aane par
+            socket.on("receiveMessage", (data) => {
+                appendMessage(data.message, "partner");
+            });
+
+            // Partner disconnect hone par
+            socket.on("partnerDisconnected", () => {
+                appendMessage("Partner disconnected.", "partner");
+            });
+
+            // File transfer start hone par
+            socket.on("file-start", (data) => {
+                receivedFiles[data.fileId] = { ...data, chunks: [] }; // File info store karna
+                appendFileMessage(data, "partner");
+                console.log("Receiving file: " + data.fileName);
+            });
+
+            // File ka chunk aane par
+            socket.on("file-chunk", (data) => {
+                if (receivedFiles[data.fileId]) {
+                    receivedFiles[data.fileId].chunks.push(new Uint8Array(data.chunk));
+                    // Progress update karna
+                    const progress = (receivedFiles[data.fileId].chunks.reduce((acc, chunk) => acc + chunk.byteLength, 0) / receivedFiles[data.fileId].fileSize) * 100;
+                    updateProgress(data.fileId, progress);
+                }
+            });
+
+            // File transfer end hone par
+            socket.on("file-end", (data) => {
+                if (receivedFiles[data.fileId]) {
+                    // Chunks ko jodkar Blob banana
+                    const receivedFile = new Blob(receivedFiles[data.fileId].chunks, { type: receivedFiles[data.fileId].fileType });
+                    receivedFile.name = receivedFiles[data.fileId].fileName;
+                    receivedFile.size = receivedFiles[data.fileId].fileSize;
+
+                    const p = document.getElementById(`file-${data.fileId}`);
+                    if (p) {
+                       if (p.querySelector('.progress-bar')) {
+                            p.querySelector('.progress-bar').style.display = 'none'; // Progress bar hide karna
+                       }
+                       const downloadLink = p.querySelector('.download-link');
+                       const fileType = receivedFiles[data.fileId].fileType;
+
+                       // Agar image ya video hai toh preview dikhana
+                       if (fileType.startsWith("image/") || fileType.startsWith("video/")) {
+                           const url = URL.createObjectURL(receivedFile);
+                           const mediaElement = fileType.startsWith("image/") ? document.createElement('img') : document.createElement('video');
+                           mediaElement.src = url;
+                           mediaElement.controls = true;
+                           mediaElement.style.maxWidth = '100%';
+                           mediaElement.style.borderRadius = '8px';
+                           mediaElement.style.marginTop = '10px';
+                           p.appendChild(mediaElement);
+                       }
+
+                       downloadLink.href = URL.createObjectURL(receivedFile); // Download link set karna
+                    }
+                    console.log("File received successfully: " + receivedFile.name);
+                }
+            });
+
+            // Typing indicator ke liye event listeners
+            let typingTimeout;
+            chatInput.addEventListener("input", () => {
+                if (!window.roomId) return;
+                const isTyping = chatInput.value.length > 0;
+                socket.emit("typing", { roomId: window.roomId, typing: isTyping }); // Typing event emit karna
+
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    socket.emit("typing", { roomId: window.roomId, typing: false });
+                }, 1000);
+            });
+
+            // Partner ke typing hone par indicator dikhana
+            socket.on("partnerTyping", ({ typing }) => {
+                typingIndicator.textContent = typing ? "Partner is typing..." : "";
+            });
+
+            // Enter dabane par message send karna
+            chatInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendBtn.click();
+                }
+            });
+
+            // Chat close karne par
+            closeBtn.addEventListener("click", () => {
+                chatContainer.style.display = "none";
+                intro.style.display = "flex";
+                chatBody.innerHTML = "";
+                chatBody.appendChild(typingIndicator);
+            });
+        }
+    </script>
+</body>
+</html>
